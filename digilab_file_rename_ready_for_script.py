@@ -1,4 +1,6 @@
-﻿import os
+#!/usr/bin/env python
+
+import os
 import re
 import sys
 import codecs
@@ -128,7 +130,10 @@ def rejigger_file_structure(directory):
                                     except Exception:
                                         pass
                                     try:
-                                         # os.renames(long_file_path, short_file_path)
+                                        # Comment out the following line for safe mode
+                                        # os.renames(long_file_path, short_file_path)
+
+                                        # Need a noop here to make safe mode work 
                                         pass
                                     except Exception:
 					print( "NOPE!")
