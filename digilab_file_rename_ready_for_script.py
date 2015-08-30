@@ -10,20 +10,20 @@ import argparse
 alpha_num = re.compile('[^0-9a-zA-Z.]+')
 
 # Project Skip List
-skip_projects = ['Clavius_1570']
+skip_projects = ['']
 
 # test function for file extensions and prefixes that we want to skip
 def skip_kind(path):
-    low_fn = os.path.basename(path).lower()
-    if( low_fn.startswith('.')
-        or low_fn.endswith('.lrdata')
-        or low_fn.endswith('.jpg') 
-        or low_fn.endswith('.xmp') 
-        or low_fn.endswith('.lrprev')  
-        or low_fn.endswith('.lrdata')
-        or low_fn.lower() == 'thumbs.db' 
-        or low_fn.lower() == 'root-pixels.db'                                    
-        or low_fn.lower() == 'previews.db'):
+    low_file = os.path.basename(path).lower()
+    if( low_file.startswith('.')
+        or low_file.endswith('.lrdata')
+        or low_file.endswith('.jpg') 
+        or low_file.endswith('.xmp') 
+        or low_file.endswith('.lrprev')  
+        or low_file.endswith('.lrdata')
+        or low_file.lower() == 'thumbs.db' 
+        or low_file.lower() == 'root-pixels.db'                                    
+        or low_file.lower() == 'previews.db'):
         return True
     else:
         return False
