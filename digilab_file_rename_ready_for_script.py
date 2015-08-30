@@ -4,143 +4,138 @@ import os
 import re
 import sys
 import codecs
+import argparse
 
 # Regex match for any non-alphanumeric/non-dot character
 alpha_num = re.compile('[^0-9a-zA-Z.]+')
-def rejigger_file_structure(directory):
-    # get the parent directory
-    parent_dir = os.path.split(PATH)[0]
+
+# Project Skip List
+skip_projects = ['Clavius_1570']
+
+# test function for file extensions and prefixes that we want to skip
+def skip_kind(path):
+    low_fn = os.path.basename(path).lower()
+    if( low_fn.startswith('.')
+        or low_fn.endswith('.lrdata')
+        or low_fn.endswith('.jpg') 
+        or low_fn.endswith('.xmp') 
+        or low_fn.endswith('.lrprev')  
+        or low_fn.endswith('.lrdata')
+        or low_fn.lower() == 'thumbs.db' 
+        or low_fn.lower() == 'root-pixels.db'                                    
+        or low_fn.lower() == 'previews.db'):
+        return True
+    else:
+        return False
+
+# returns full new path to file
+def rejigger_path(OUT_STR, project_name, path):
+
+
+    # AD HOC adjustments to project name can go here
+    ###
+    
+    project_out = os.path.join(OUT_STR, project_name)
+
+    newpath = os.path.basename(path)
+    newpath = newpath.lower()
+    newpath = alpha_num.sub('_', newpath)    
+    newpath = newpath.replace(project_name.lower(), '')
+
+    newpath = newpath.lstrip('_')
+    newpath = newpath.rstrip('_')
+
+    if (newpath.endswith('.tiff')):
+        newpath = newpath[:-1]
+    
+    if (newpath.endswith('.lrcat')):
+        newpath = 'lrcat.lrcat'
+
+    if(not newpath):
+        newpath = "EMPTY"
+
+    # AD HOC adjustments to filenames can go here
+    ###    
+        
+    return os.path.join(project_out, newpath)
+        
+def main():
+
+    # What game shall we play today??
+    parser = argparse.ArgumentParser(description="Normalize filenames to clean up hierarchy priory to bagging." )
+    parser.add_argument("--destroy", help="Set this flag to move files around.",action="store_true")
+    args = parser.parse_args()
+
+
+    # Set up input and output folders
+    IN_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/workspace/Ready to Script'
+    OUT_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/temp'    
+
+    
     # get the directories just under the one specified
-    for project_dirs in os.listdir(directory):
-        ## skip hidden files and lightroom previews
-        if (not project_dirs.startswith('.') 
-            and not project_dirs.endswith('.lrdata')):
-            ## Skip folders as directed by Barb
-            #and not project_dirs == 'Darwin_DMP'
-            #and not project_dirs == 'Portraits_Large'
-            #and not project_dirs == 'Portraits_Small'
-            #and not project_dirs == 'Scientific_Instruments_&_Historical_Artifacts'
-            ## Skip folders as directed by Barb
-            #and not project_dirs == 'Aristarchus_1572' 
-            #and not project_dirs == 'Fontana_1646' 
-            #and not project_dirs == 'Stelluti_1637'):
-            project_dir = os.path.join(directory, project_dirs)
-            # get the name of this directory, which is probably a project name
-            base_name = os.path.basename(project_dir)
-            base_name = alpha_num.sub('_', base_name)
-            try:
-                print(base_name)
-            except Exception:
-                pass
-            # set the output directory
-#            output_dir = os.path.join(parent_dir, 'to_bag', base_name)
-            output_dir = os.path.join(OUTPUT_STR, base_name)
-            ## crawl project directories only, not files at this level
-            print(project_dir)
-            if os.path.isdir(project_dir):
-                #print(project_dir)
-                for rel_sub_dir in os.listdir(project_dir):
-                    # filter lightroom previews and hidden directories
-                    if not rel_sub_dir.startswith('.') and not rel_sub_dir.endswith('.lrdata'):
-                        #print(rel_sub_dir)
-                        sub_dir = os.path.join(project_dir, rel_sub_dir)
-                        for path, subdirs, files in os.walk(sub_dir):
-                            # iterate over every file
-                            for file in files:
-                                # skip hidden files, jpegs, and lightroom previews
-                                if (not file.startswith('.')
-                                    and not file.endswith('.jpg') 
-                                    and not file.endswith('.xmp') 
-                                    and not file.lower() == 'thumbs.db' 
-                                    and not file.endswith('.lrprev')  
-                                    and not file.endswith('.lrdata') 
-                                    and not file.lower() == 'root-pixels.db'                                    
-                                    and not file.lower() == 'previews.db'):
-                                                                    
-                                    # get the full path of each file currently
-                                    long_file_path = os.path.join(path, file)
-                                    
-                                    ## Check for any meaningful info in the direct parent folder of the file  only for second run
-                                    parent_name_tmp = os.path.basename(path)
-                                    # replace any special characters with underscores
-                                    parent_name = alpha_num.sub('_', parent_name_tmp)
-                                    parent_name = parent_name.lower()
-                                    # strip out the base name from the parent name.  It's redundant
-                                    base_name_lwr = base_name.lower()
-                                    parent_name = parent_name.replace(base_name_lwr, '')
-                                    # strip any leading/trailing underscores
-                                    parent_name = parent_name.lstrip('_')
-                                    parent_name = parent_name.rstrip('_')
-                                    # strip out the base name from the parent name.  It's redundant                                   
-                                    #print(parent_name)
-                                    # get rid of specific format folders
-                                    if parent_name.endswith('raw'):
-                                        parent_name = parent_name[:-3]
-                                    if parent_name.endswith('tiff'):
-                                        parent_name = parent_name[:-4]
-                                    # replace any special characters with underscores
-                                    short_file = alpha_num.sub('_', file)
-				    # special fixes
-                                    short_file = short_file.replace('Hildegarde_', 'Hildegard_')
-                                    short_file = short_file.replace('Hildegarde_', 'Hildegard_')
-                                    short_file = short_file.replace(base_name, '')
-				    # special fixes
-				    if base_name == ('Finley_1887'):
-				        short_file = short_file.replace('Finky_1887_', 'aa_')
-				    if base_name == ('Borelli_1680_1681'):
-				        short_file = short_file.replace('Borelli_1680_', 'aa_')
-				    if base_name == ('Nieremberg_1635'):
-				        short_file = short_file.replace('raws_', 'aa_')
-                                    # strip out the base name from the file name.  It's redundant
-                                    # strip any leading/trailing underscores
-                                    short_file = short_file.lstrip('_')
-                                    short_file = short_file.rstrip('_')
-                                    ## Fix some specific stuff in Galileo_1623
-                                    if (project_dirs == 'Galileo_1623'
-                                        and short_file.startswith('10_26_12__0')):
-                                        short_file = short_file.replace('10_26_12__0', '')
-                                    ## Fix some specific stuff in Grassi_1619
-                                    if (project_dirs == 'Grassi_1619'
-                                        and short_file.startswith('Galileo_1618_')):
-                                        short_file = short_file.replace('Galileo_1618_', '')
-                                    ## Fix some specific stuff in Sacrobosco_1490
-                                    if (project_dirs == 'Sacrobosco_1490'
-                                        and short_file.startswith('Bosco_1490_')):
-                                        short_file = short_file.replace('Bosco_1490_', '')
-                                    ## Fix some specific stuff in Ptolemy_1496
-                                    if (project_dirs == 'Ptolemy_1496'
-                                        and short_file.startswith('Regiomontanus_1496_')):
-                                        short_file = short_file.replace('Regiomontanus_1496_', '')
-                                    #specific tweak requested by barb
-                                    short_file = short_file.replace('Galileo2_', '')
-                                    short_file = short_file.replace('Abraham_', '')
-                                    output_dir = output_dir.replace('dAviso_1656', 'dAviso_1665')
-                                    #print(short_file)
-                                    # join the remaining parent name with the short file name
-                                    ## Again, just for a second pass
-                                    #short_file = os.path.join(parent_name, file)
-                                    # get the new full path of each file
-                                    short_file_path = os.path.join(output_dir, short_file)
-                                    try:
-                                        print('    old: ' + long_file_path)
-                                    except Exception:
-                                        pass
-                                    try:
-                                        print('    new: ' + short_file_path)
-                                    except Exception:
-                                        pass
-                                    try:
-                                        # Comment out the following line for safe mode
-                                        # os.renames(long_file_path, short_file_path)
+    # these are the projects that we need to bag.
+    for project_maybe in os.listdir(IN_STR):
+        
+        # skip things taht don't look like projects or that we're
+        # specifically skipping
+        if ( skip_kind(project_maybe)
+             or project_maybe in skip_projects):
+            continue
 
-                                        # Need a noop here to make safe mode work 
-                                        pass
-                                    except Exception:
-					print( "NOPE!")
-                                        pass
-#PATH_STR = r'\\norfile.net.ou.edu\UL-DIGILAB\Workspace\Workspace_HoS-digilab\Projects completed'
-OUTPUT_STR = r'/srv/temp/'
-PATH_STR = r'/srv/workspace/Ready to Script/'
-PATH = os.path.abspath(PATH_STR)
+        # Also skip anything that isn't a directory, because all
+        # projects are directories
+        project_in =os.path.join(IN_STR, project_maybe) 
+        if (not os.path.isdir(project_in)):
+            continue
+            
+        # If we haven't skipped it at this point, we assume that it's
+        # a project and set it up as one. 
+        project_name = alpha_num.sub('_', project_maybe)
+        print "BEGIN PROJECT:", project_name
 
-rejigger_file_structure(PATH)
+        project_moves = []
+
+        # We'll get all of the files in the project
+        for path, subdirs, files in os.walk(project_in):
+            for filename in files:
+                filepath = os.path.join(path, filename)
+
+                # We don't want some of the files
+                if(skip_kind(filepath)):
+                    continue
+                out_filepath = rejigger_path(OUT_STR, project_name, filepath)
+
+                project_moves.append( (filepath, out_filepath) )
+
+        # sort by destination to improve reviewability
+        project_moves.sort(key=lambda  x:x[1])
+                
+
+        moved=[]
+        for src,dest in project_moves:
+
+            print  "%s <--- %s" % (dest,src )
+
+            # keep track of where we're moving things in case of data
+            # loss we want to print all file moves, and not have to
+            # deal with finding problems one at a time, so do this as
+            # a review step and not when createing the list
+            if dest in moved:
+                print ">>>> WARNING: multiple files moved to:%s" %(dest)
+            if dest.endswith("EMPTY"):
+                print ">>>> WARNING: nothing retained in filename, using %s" %(dest)
+
+            moved.append(dest)
+
+            if (args.destroy) :
+                try:
+                    os.renames( move[0], move[1])
+                except Exception:
+		    print( "NOPE! Unable to rename.")
+
+                        
+        print "END PROJECT:", project_name
+        print ""
+    
+if __name__ == "__main__":
+    main()
