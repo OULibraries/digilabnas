@@ -58,6 +58,31 @@ def rejigger_path(OUT_STR, project_name, path):
     ###    
         
     return os.path.join(project_out, newpath)
+
+
+
+def calculate_moves(OUT_STR, project_name, project_path):
+
+    project_moves = []
+    for path, subdirs, files in os.walk(project_path):
+        for filename in files:
+            filepath = os.path.join(path, filename)
+            
+            # We don't want some of the files
+            if(skip_kind(filepath)):
+                continue
+
+            out_filepath = rejigger_path(OUT_STR, project_name, filepath)
+            project_moves.append( (filepath, out_filepath) )
+            
+    # return list sorted by destination to improve reviewability
+    project_moves.sort(key=lambda  x:x[1])
+
+    return project_moves
+
+    
+
+
         
 def main():
 
@@ -68,11 +93,6 @@ def main():
     parser.add_argument("--dest", required="true", help="pre-bag project destination folder")
     args = parser.parse_args()
 
-
-    ## Set up input and output folders
-    #IN_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/workspace/Ready to Script'
-    #OUT_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/temp'
-
     IN_STR = args.src
     OUT_STR = args.dest
 
@@ -80,7 +100,7 @@ def main():
     # these are the projects that we need to bag.
     for project_maybe in os.listdir(IN_STR):
         
-        # skip things taht don't look like projects or that we're
+        # skip things that don't look like projects or that we're
         # specifically skipping
         if ( skip_kind(project_maybe)
              or project_maybe in skip_projects):
@@ -97,23 +117,8 @@ def main():
         project_name = alpha_num.sub('_', project_maybe)
         print "BEGIN PROJECT:", project_name
 
-        project_moves = []
-
-        # We'll get all of the files in the project
-        for path, subdirs, files in os.walk(project_in):
-            for filename in files:
-                filepath = os.path.join(path, filename)
-
-                # We don't want some of the files
-                if(skip_kind(filepath)):
-                    continue
-                out_filepath = rejigger_path(OUT_STR, project_name, filepath)
-
-                project_moves.append( (filepath, out_filepath) )
-
-        # sort by destination to improve reviewability
-        project_moves.sort(key=lambda  x:x[1])
-                
+        # calculate moves
+        project_moves = calculate_moves(OUT_STR, project_name, project_in)
 
         moved=[]
         for src,dest in project_moves:
