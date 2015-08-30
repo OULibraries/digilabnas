@@ -32,7 +32,7 @@ def skip_kind(path):
 def rejigger_path(OUT_STR, project_name, path):
 
 
-    # AD HOC adjustments to project name can go here
+    # AD HOC adjustments to project name could go here
     ###
     
     project_out = os.path.join(OUT_STR, project_name)
@@ -54,7 +54,7 @@ def rejigger_path(OUT_STR, project_name, path):
     if(not newpath):
         newpath = "EMPTY"
 
-    # AD HOC adjustments to filenames can go here
+    # AD HOC adjustments to filenames could go here
     ###    
         
     return os.path.join(project_out, newpath)
@@ -63,15 +63,19 @@ def main():
 
     # What game shall we play today??
     parser = argparse.ArgumentParser(description="Normalize filenames to clean up hierarchy priory to bagging." )
-    parser.add_argument("--destroy", help="Set this flag to move files around.",action="store_true")
+    parser.add_argument("--destroy", help="Set this flag to really move files.",action="store_true")
+    parser.add_argument("--src", required="true", help="pre-bag project source folder")
+    parser.add_argument("--dest", required="true", help="pre-bag project destination folder")
     args = parser.parse_args()
 
 
-    # Set up input and output folders
-    IN_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/workspace/Ready to Script'
-    OUT_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/temp'    
+    ## Set up input and output folders
+    #IN_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/workspace/Ready to Script'
+    #OUT_STR = r'/Users/lmc/Projects/opt-digilabnas-bin/srv/temp'
 
-    
+    IN_STR = args.src
+    OUT_STR = args.dest
+
     # get the directories just under the one specified
     # these are the projects that we need to bag.
     for project_maybe in os.listdir(IN_STR):
