@@ -114,7 +114,14 @@ def rejigger_file_structure(directory):
                                     #specific tweak requested by barb
                                     short_file = short_file.replace('Galileo2_', '')
                                     short_file = short_file.replace('Abraham_', '')
+                                    short_file = short_file.replace('AbrahambarHiyya', 'barHiyya')
+                                    short_file = short_file.replace('Newton_1687_', '')
+                                    short_file = short_file.replace('Riccioli_1651_', '')
+                                    short_file = short_file.replace('Kircheri_1667_','')
+                                    short_file = short_file.replace('Asistarchus_1572_','')
+                                    short_file = short_file.replace('Allen_Triantaphillidou_2011_','')
                                     output_dir = output_dir.replace('dAviso_1656', 'dAviso_1665')
+
                                     #print(short_file)
                                     # join the remaining parent name with the short file name
                                     ## Again, just for a second pass
@@ -131,8 +138,8 @@ def rejigger_file_structure(directory):
                                         pass
                                     try:
                                         # Comment out the following line for safe mode
-                                        # os.renames(long_file_path, short_file_path)
-
+                                        os.renames(long_file_path, short_file_path)
+                                        
                                         # Need a noop here to make safe mode work 
                                         pass
                                     except Exception:
