@@ -14,6 +14,7 @@ skip_projects = ['']
 
 # test function for file extensions and prefixes that we want to skip
 def skip_kind(path):
+    """Returns True if the path points to a kind of file that should be skipped, based on extensions (mostly). False otherwise"""
     low_file = os.path.basename(path).lower()
     if( low_file.startswith('.')
         or low_file.endswith('.lrdata')
@@ -30,6 +31,7 @@ def skip_kind(path):
 
 # returns full new path to file
 def rejigger_path(OUT_STR, project_name, path):
+    """Returns new path that a file should be moved to in the OUT_STR folder, under project_name"""
 
 
     # AD HOC adjustments to project name could go here
@@ -62,7 +64,7 @@ def rejigger_path(OUT_STR, project_name, path):
 
 
 def calculate_moves(OUT_STR, project_name, project_path):
-
+""" Returns a list of file moves in the form of (src,dest) tuples that should be performed on a project"""
     project_moves = []
     for path, subdirs, files in os.walk(project_path):
         for filename in files:
@@ -85,7 +87,7 @@ def calculate_moves(OUT_STR, project_name, project_path):
 
         
 def main():
-
+"""Normalizes project filenames and paths in preparation for bagging"""
     # What game shall we play today??
     parser = argparse.ArgumentParser(description="Normalize filenames to clean up hierarchy priory to bagging." )
     parser.add_argument("--destroy", help="Set this flag to really move files.",action="store_true")
