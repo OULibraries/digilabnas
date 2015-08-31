@@ -14,7 +14,8 @@ skip_projects = ['']
 
 # test function for file extensions and prefixes that we want to skip
 def skip_kind(path):
-    """Returns True if the path points to a kind of file that should be skipped, based on extensions (mostly). False otherwise"""
+    """Returns True if the path points to a kind of file that should
+    be skipped, based on extensions (mostly). False otherwise"""
     low_file = os.path.basename(path).lower()
     if( low_file.startswith('.')
         or low_file.endswith('.lrdata')
@@ -31,35 +32,35 @@ def skip_kind(path):
 
 # returns full new path to file
 def rejigger_path(OUT_STR, project_name, path):
-    """Returns new path that a file should be moved to in the OUT_STR folder, under project_name"""
-
+    """Returns new path that a file should be moved to in the OUT_STR
+    folder, under project_name."""
 
     # AD HOC adjustments to project name could go here
     ###
-    
+
     project_out = os.path.join(OUT_STR, project_name)
 
-    newpath = os.path.basename(path)
-    newpath = newpath.lower()
-    newpath = alpha_num.sub('_', newpath)    
-    newpath = newpath.replace(project_name.lower(), '')
+    newbase = os.path.basename(path)
+    newbase = newbase.lower()
+    newbase = alpha_num.sub('_', newbase)    
+    newbase = newbase.replace(project_name.lower(), '')
 
-    newpath = newpath.lstrip('_')
-    newpath = newpath.rstrip('_')
+    newbase = newbase.lstrip('_')
+    newbase = newbase.rstrip('_')
 
-    if (newpath.endswith('.tiff')):
-        newpath = newpath[:-1]
+    if (newbase.endswith('.tiff')):
+        newbase = newbase[:-1]
     
-    if (newpath.endswith('.lrcat')):
-        newpath = 'lrcat.lrcat'
+    if (newbase.endswith('.lrcat')):
+        newbase = 'lrcat.lrcat'
 
-    if(not newpath):
-        newpath = "EMPTY"
+    if(not newbase):
+        newbase = "EMPTY"
 
     # AD HOC adjustments to filenames could go here
     ###    
         
-    return os.path.join(project_out, newpath)
+    return os.path.join(project_out, newbase)
 
 
 
