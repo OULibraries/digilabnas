@@ -64,7 +64,7 @@ def rejigger_path(OUT_STR, project_name, path):
 
 
 def calculate_moves(OUT_STR, project_name, project_path):
-""" Returns a list of file moves in the form of (src,dest) tuples that should be performed on a project"""
+    """ Returns a list of file moves in the form of (src,dest) tuples that should be performed on a project"""
     project_moves = []
     for path, subdirs, files in os.walk(project_path):
         for filename in files:
@@ -87,7 +87,7 @@ def calculate_moves(OUT_STR, project_name, project_path):
 
         
 def main():
-"""Normalizes project filenames and paths in preparation for bagging"""
+    """Normalizes project filenames and paths in preparation for bagging"""
     # What game shall we play today??
     parser = argparse.ArgumentParser(description="Normalize filenames to clean up hierarchy priory to bagging." )
     parser.add_argument("--destroy", help="Set this flag to really move files.",action="store_true")
