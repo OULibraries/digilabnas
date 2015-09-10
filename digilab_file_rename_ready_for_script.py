@@ -17,15 +17,14 @@ def skip_kind(path):
     """Returns True if the path points to a kind of file that should
     be skipped, based on extensions (mostly). False otherwise"""
     low_file = os.path.basename(path).lower()
-    if( low_file.startswith('.')
-        or low_file.endswith('.lrdata')
-        or low_file.endswith('.jpg') 
-        or low_file.endswith('.xmp') 
-        or low_file.endswith('.lrprev')  
-        or low_file.endswith('.lrdata')
-        or low_file.lower() == 'thumbs.db' 
-        or low_file.lower() == 'root-pixels.db'                                    
-        or low_file.lower() == 'previews.db'):
+
+    skip_suffixes =('.lrdata', '.jpg', '.xmp', '.lrprev', '.lrdata')
+    skip_prefixes =('.')
+    skip_names = ('thumbs.db', 'root-pixels.xb', 'previews.db')
+
+    if( low_file.endswith( skip_suffixes)
+        or low_file.startswith( skip_prefixes)
+        or low_file in skip_names):
         return True
     else:
         return False
