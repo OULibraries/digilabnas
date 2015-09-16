@@ -18,7 +18,7 @@ def skip_kind(path):
     be skipped, based on extensions (mostly). False otherwise"""
     low_file = os.path.basename(path).lower()
 
-    skip_suffixes =('.lrdata', '.jpg', '.xmp', '.lrprev', '.lrdata')
+    skip_suffixes =('.lrdata', '.xmp', '.lrprev', '.lrdata')
     skip_prefixes =('.')
     skip_names = ('thumbs.db', 'root-pixels.xb', 'previews.db')
 
@@ -125,7 +125,7 @@ def main():
         moved=[]
         for src,dest in project_moves:
 
-            print  "%s <--- %s" % (dest,src )
+            print  "%s <--- %s" % ( dest,src)
 
             # keep track of where we're moving things in case of data
             # loss we want to print all file moves, and not have to
@@ -140,7 +140,7 @@ def main():
 
             if (args.destroy) :
                 try:
-                    os.renames( move[0], move[1])
+                    os.renames( src,dest)
                 except Exception:
 		    print( "NOPE! Unable to rename.")
 
