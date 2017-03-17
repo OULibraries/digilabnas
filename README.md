@@ -21,8 +21,7 @@ digilab_file_rename_ready_for_script.py --src /srv/workspace/5_Ready_for_script 
 ```
 2. Run in destroy mode to actually make changes
 ```
-digilab_file_rename_ready_for_script.py  
---src /srv/workspace/5_Ready_for_script --dest /srv/temp --destroy > output
+digilab_file_rename_ready_for_script.py --src /srv/workspace/5_Ready_for_script --dest /srv/temp --destroy > output
 ```
 3. Move renamed files to their final destination
 ```
