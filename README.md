@@ -13,7 +13,7 @@ bin/
 
 ## digilab_file_rename_ready_for_script.py
 
-On an as-needed basis, we do the following file name normalization on image sets that are ready to be bagged:
+On an as-needed basis, we use this script to do some file name normalization on image sets that are ready to be prepped for bagging.
 
 1. Run in test mode (default) to genearate a report of the changes that would be made and send them to the DigiLab for review. 
 ```
